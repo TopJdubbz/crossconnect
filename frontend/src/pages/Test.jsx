@@ -5,6 +5,30 @@ import ButtonComponent from "../components/Button";
 import SearchComponent from "../components/Search";
 import Dither from "../components/Dither";
 
+// const [events, setEvents] = useState([]);
+// const [loading, setLoading] = useState(true);
+// const [error, setError] = useState(null);
+
+// useEffect(() => {
+//   fetch("http://localhost:5000/api/events")
+//     .then((res) => {
+//       if (!res.ok) throw new Error("Failed to fetch events");
+//       return res.json();
+//     })
+//     .then((data) => {
+//       // Map API shape to calendar shape: { start, end, title }
+//       const mapped = (data.events || data).map((e) => ({
+//         ...e,
+//         start: new Date(e.start),
+//         end: new Date(e.end),
+//         title: e.title ?? e.name,
+//       }));
+//       setEvents(mapped);
+//     })
+//     .catch((err) => setError(err.message))
+//     .finally(() => setLoading(false));
+// }, []);
+
 // Sample events to test calendar functionality
 const sampleEvents = [
   {
@@ -59,6 +83,9 @@ function Test() {
       <h1>Calendar test</h1>
       <p>Use the calendar below to try month, week, and agenda views.</p>
       <CalendarComponent events={sampleEvents} />
+      {/* {loading && <p>Loading events…</p>}
+      {error && <p>Error: {error}</p>}
+      <CalendarComponent events={events} /> */}
       <h1>Search test</h1>
       <SearchComponent />
       <br></br>
