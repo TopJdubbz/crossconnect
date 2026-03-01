@@ -1,5 +1,7 @@
 import sqlite3
 from datetime import datetime, timedelta
+from models import event
+import osmnx as ox
 
 # Create the global connection with the thread safety flag 
 connection = sqlite3.connect('events.db', check_same_thread=False)
@@ -51,17 +53,27 @@ def addEvent(name, location, category, time):
     cursor.execute('INSERT INTO events (name, location, category, time) VALUES (?, ?, ?, ?)', (name, location, category, time))
     connection.commit() 
 
+# Fetch events by category, in find section
 def getEvents(category):
     events = []
-    for row in cursor.execute('SELECT * FROM events WHERE category = ?', (category,)):
+    for row in cursor.execute('SELECT * FROM events WHERE category LIKE ?', (category,)):
+        #make get coords only take the addy
+        coords = getCoord(row[2])
+        row[5] = coords[1] if coords else None
+        row[6] = coords[0]
+        #This gets sent to find.jsx. 
         events.append({
             "id": row[0],
             "name": row[1],
             "location": row[2],
-            "category": row[3],
-            "time": row[4]
+            "interest": row[3],
+            "timedate": row[4],
+            "lat": row[5],
+            "lng": row[6]
         })
     return events 
+
+
 
 def getTopTenEventsByDate():
     events = []
@@ -74,3 +86,21 @@ def getTopTenEventsByDate():
             "time": row[4]
         })
     return events
+
+
+#Takes events from getEvents and stores a list of event objects, to be used for map and more.
+def makeEventObjList(events):
+    eventObjs = []
+    for e in events:
+        eventObj = event.Event(e['category'], e['name'], e['location'], e['time'])
+        eventObjs.append(eventObj)
+    return eventObjs
+
+#def getAddres(event):
+   # location = event.location
+   # return location
+
+def getCoord(myAddr):
+    coord = ox.geocode(myAddr)
+    return coord
+

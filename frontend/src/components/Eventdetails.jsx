@@ -21,16 +21,24 @@ export default function Eventdetails({ event, onClose }) {
           )}
           <h2>{event.name}</h2>
           {event.location && (
-            <p><strong>Location:</strong> {event.location}</p>
+            <p>
+              <strong>Location:</strong> {event.location}
+            </p>
           )}
           {event.category && (
-            <p><strong>Category:</strong> {event.category}</p>
+            <p>
+              <strong>Category:</strong> {event.category}
+            </p>
           )}
           {event.date && (
-            <p><strong>Date:</strong> {event.date}</p>
+            <p>
+              <strong>Date:</strong> {event.date}
+            </p>
           )}
           {event.time && (
-            <p><strong>Time:</strong> {event.time}</p>
+            <p>
+              <strong>Time:</strong> {event.time}
+            </p>
           )}
           {event.description && (
             <p className="eventdetails-description">{event.description}</p>
