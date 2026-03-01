@@ -4,11 +4,6 @@ app = Flask(__name__, template_folder=str(_frontend))
 
 _frontend = Path(__file__).resolve().parent.parent.parent
 
-
-class Interest:
-    def __init__(self, type):
-        self.type = type
-
 class Location:
     #Edit this as we figure out google maps
     def __init__(self, zipCode, number, street, city, state):
@@ -20,26 +15,44 @@ class Location:
         #self.longitude = longitude
         #self.latitude = latitude
 
+    @classmethod
+    def createLocation(cls, zipCode, number, street, city, state):
+        return cls(zipCode, number, street, city, state)
+
 class EventDate:
     def __init__(self, day, month, year):
         self.day = day
         self.month = month
         self.year = year
 
+    @classmethod
+    def createEventDate(cls, day, month, year):
+        return cls(day, month, year)
+
 class EventTime:
     def __init__(self, hour, minute):
         self.hour = hour
         self.minute = minute
 
+    @classmethod
+    def createEventTime(cls, hour, minute):
+        return cls(hour, minute)
+
 class Event:
-    def __init__(self, name, date, location, time):
+    def __init__(self, interest, name, date, location, time):
+        self.interest = interest
         self.name = name
         #Edit location as we change location
         self.location = location
         self.date = date
         #self.capacity = capacity
         self.time = time
+    
+    @classmethod
+    def createEvent(cls, interest, name, date, location, time):
+        return cls(interest, name, date, location, time)
 
+                   
 def addEvent(name, location, date, time):
     #attributes of address
     myLoc = location(number, street, city, state)
