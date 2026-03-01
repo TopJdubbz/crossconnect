@@ -11,7 +11,7 @@ with sqlite3.connect('events.db') as connection:
 
 
 def addEvent(interest, name, location, category, time):
-    newEvent = Event(interest, name, category, location, time)
+    newEvent = Event.createEvent(interest, name, category, location, time)
     cursor.execute('INSERT INTO events VALUES (?, ?, ?, ?, ?)', (newEvent.info, newEvent.name, newEvent.location, newEvent.category, newEvent.time))
 
 
