@@ -55,10 +55,10 @@ class Event:
                    
 def addEvent(name, location, date, time):
     #attributes of address
-    myLoc = location(number, street, city, state)
-    myDate = date(day, month, year)
-    myTime = time(hour, minute)
-    newEvent = Event(name, myDate, myLoc, myTime)
+    myLoc = Location.createLocation(zipCode, number, street, city, state)
+    myDate = EventDate.creatEventDate(day, month, year)
+    myTime = EventTime.createEventTime(hour, minute)
+    newEvent = Event.createEvent(interest, name, myDate, myLoc, myTime)
 
 def getEvents(eventName):
     #get event from database
