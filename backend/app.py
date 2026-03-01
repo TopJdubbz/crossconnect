@@ -1,4 +1,5 @@
 import services.event_service as es
+from models import event
 from flask import Flask, jsonify, request
 from flask_cors import CORS 
 
@@ -15,10 +16,10 @@ def add_event():
     
     name = data.get('name')
     location = data.get('location')
-    date = data.get('date')
-    time = data.get('time')
+    timedate = data.get('timedate')
+    category = data.get('category')
     
-    es.addEvent(name, location, date, time)
+    es.addEvent(name, location, category, timedate)
     
     return jsonify({"message": "Event added successfully"}), 201
 

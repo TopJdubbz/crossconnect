@@ -1,13 +1,11 @@
 import "./Eventdetails.css";
 
 export default function Eventdetails({ event }) {
-    return(
-        if(!event) return null; //no selected event, dont show anything 
-
+    if (!event) return null; //no selected event, dont show anything
         return(
             <div className = "event details">
                 <button 
-                    classname = "close details"
+                    className = "close details"
                     onClick = {onClose} // close details when x is clicked 
                     type = "button"
                 >
@@ -17,7 +15,6 @@ export default function Eventdetails({ event }) {
                 
             </div >
 
-        )
     )
 
 }

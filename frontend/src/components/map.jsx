@@ -5,13 +5,13 @@ import L, { map } from 'leaflet';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
-export default function EventMap() {
+export default function EventMap({events}) {
     const [events, setEvents] = useState([]);
     //Change style depending on later.
 
     //Fitbounds:
     useEffect(() => {
-        if (mapRef.current) {const group = new L.featureGroup(events.map(event => L.marker([event.location.lat, event.location.lng])));
+        if (mapRef.current) {const group = new L.featureGroup(events.map(event => L.marker([event.lat, event.lng])));
         mapRef.current.fitBounds(group.getBounds(), {padding: [50,50]})}}, [events])
         //change the [events] part if its glitchy.
     
@@ -28,11 +28,11 @@ export default function EventMap() {
                 />
                 //Convert each event in events to a marker on the map:
                 {events.map((event, index) => (
-                    <Marker key={index} position={[event.location.lat, event.location.lng]}>
+                    <Marker key={index} position={[event.lat, event.lng]}>
                         <Popup> //Includ CSS here!
                             <strong>{event.name}</strong>
                             <p>{event.interest}</p>
-                            <p>{event.location.address}</p>
+                            <p>{event.location}</p>
                             <p>{event.timedate}</p>
                         </Popup>
                     </Marker>
