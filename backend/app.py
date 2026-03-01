@@ -53,7 +53,7 @@ class Event:
         return cls(interest, name, date, location, time)
 
                    
-def addEvent(name, location, date, time):
+def addEvent(interest, name, location, date, time):
     #attributes of address
     myLoc = Location.createLocation(zipCode, number, street, city, state)
     myDate = EventDate.creatEventDate(day, month, year)
