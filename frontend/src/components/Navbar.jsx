@@ -6,11 +6,11 @@ const Navbar = () => {
       <div style={styles.logo}>CrossConnect</div>
       <ul style={styles.navLinks}>
         <li><a href="#" style={styles.link}>Home</a></li>
-        <li><a href="#" style={styles.link}>Events</a></li>
-        <li><a href="#" style={styles.link}>About</a></li>
-        <li><a href="#" style={styles.link}>Contact</a></li>
+        <li><a href="#" style={styles.link}>Find</a></li>
+        <li><a href="#" style={styles.link}>Create</a></li>
+        <li><a href="#" style={styles.link}>Profile</a></li>
       </ul>
-      <input type="search" placeholder="Search..." style={styles.searchInput} />
+      <input type="search" placeholder="Search..." style={styles.searchInput}  />
     </nav>
   );
 };
