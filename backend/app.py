@@ -8,7 +8,7 @@ CORS(app)
 
 # Initialize database with sample events on startup
 # (Assuming you built this function inside event_service.py)
-#es.init_db()
+es.init_db()
 
 @app.route('/addEvent', methods=['POST'])
 def add_event():
@@ -24,11 +24,11 @@ def add_event():
     return jsonify({"message": "Event added successfully"}), 201
 
 @app.route('/getEvents', methods=['GET'])
-def get_events():
-    category = request.args.get('event_category') 
+def get_events_by_category():
+    category_query = request.args.get('event_category', '') 
     
-    events = es.getEvents(category)
-    return jsonify(events), 200    
+    events = es.getEvents(category_query)
+    return jsonify(events)  
 
 @app.route('/getUpcomingEvents', methods=['GET'])
 def get_upcoming_events():
