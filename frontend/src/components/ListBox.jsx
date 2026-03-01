@@ -4,7 +4,11 @@ import "./ListBox.css";
 function Card({ image, title, description }) {
   return (
     <div className="box-card">
-      <img src={image} alt={title} className="box-image" />
+      {image ? (
+        <img src={image} alt={title} className="box-image" />
+      ) : (
+        <div className="box-image box-image-placeholder" aria-hidden="true" />
+      )}
 
       <div className="box-content">
         <h3>{title}</h3>

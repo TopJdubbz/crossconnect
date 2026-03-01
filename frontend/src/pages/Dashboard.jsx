@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
+import "../components/ListBox.css";
 import Navbar from "../components/Navbar";
-import ListSection from "../components/ListSection";
+import Card from "../components/ListBox";
 import Dither from "../components/Dither";
 import { fallbackEvents } from "../data/fallbackEvents";
 
@@ -11,6 +12,7 @@ function Dashboard() {
   const [error, setError] = useState(null);
 
   const formatTime = (timeString) => {
+    if (!timeString) return "";
     const date = new Date(timeString);
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, '0');
@@ -110,15 +112,22 @@ function Dashboard() {
             )}
 
             {upcomingEvents.length > 0 && (
-              <ul>
+              <div className="box-grid">
                 {upcomingEvents.map((event) => (
-                  <li key={event.id}>
-                    <strong>{event.name}</strong> - {formatTime(event.time)}
-                    <br />
-                    Location: {event.location} | Category: {event.category}
-                  </li>
+                  <Card
+                    key={event.id}
+                    title={event.name}
+                    description={[
+                      event.location,
+                      event.category || event.interest,
+                      formatTime(event.time),
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                    image={event.image}
+                  />
                 ))}
-              </ul>
+              </div>
             )}
           </div>
         </div>

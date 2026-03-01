@@ -53,7 +53,7 @@ def build_coordinate_cache():
         except Exception as e:
             print(f"✗ Failed to map: {address}")
             
-        
+        time.sleep(1.5)
         
     print("Coordinate cache built successfully! Server ready.")
 
