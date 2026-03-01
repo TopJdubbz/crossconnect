@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import CalendarComponent from "../components/Calendar";
 import ButtonComponent from "../components/Button";
 import SearchComponent from "../components/Search";
+import Dither from "../components/Dither";
 
 // Sample events to test calendar functionality
 const sampleEvents = [
@@ -37,6 +38,19 @@ function Test() {
   return (
     <div style={{ padding: "24px" }}>
       <Link to="/">← Back to home</Link>
+      <h1>Dither test</h1>
+      <div style={{ width: "100%", height: "200px", position: "relative" }}>
+        <Dither
+          waveColor={[0.5, 0.5, 0.5]}
+          disableAnimation={false}
+          enableMouseInteraction
+          mouseRadius={0.3}
+          colorNum={4}
+          waveAmplitude={0.3}
+          waveFrequency={3}
+          waveSpeed={0.05}
+        />
+      </div>
       <h1>Button test</h1>
       <ButtonComponent
         text="Test Button"
