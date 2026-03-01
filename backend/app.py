@@ -8,7 +8,7 @@ _frontend = Path(__file__).resolve().parent.parent.parent
 @app.route('/addEvent', methods=['POST'])
 def add_user():
     user_input = request.json.get('event_data')
-    es.addEvent(user_input.name, user_input.location, user_input.date, user_input.time)
+    es.addEvent(user_input.interest, user_input.name, user_input.location, user_input.date, user_input.time)
     return jsonify('Event added successfully')
 
 @app.route('/getEvents', methods=['GET'])
