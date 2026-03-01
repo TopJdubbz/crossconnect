@@ -6,10 +6,12 @@ import SearchResult from "../components/SearchResult";
 import EventMap from "../components/map"; 
 import "./Dashboard.css";
 import "./Find.css";
+import Eventdetails from "../components/Eventdetails";
 
 function Find() {
   const [events, setEvents] = useState([]);
   const [query, setQuery] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     const fetchEventsByCategory = async () => {
