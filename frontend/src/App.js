@@ -2,6 +2,9 @@ import React, { useState, useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import ListSection from './components/ListSection';
+import { Routes, Route } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import Create from './pages/Create';
 
 function App() {
   //Fetch data from app.py connecting frontend to backend
@@ -14,25 +17,10 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      <div>
-      <ListSection/>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Dashboard/>}/>
+      <Route path="/create" element={<Create/>}/>
+    </Routes>
   );
 }
 
