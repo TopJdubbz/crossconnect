@@ -6,3 +6,4 @@ dependencies:
   - python>=3.10
   - flask>=3.0
   - flask-cors>=4.0
+  - osmnx>=1.9

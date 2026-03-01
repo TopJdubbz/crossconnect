@@ -29,7 +29,7 @@ const EventForm = () => {
         };
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/addEvent", {
+            const response = await fetch("/addEvent", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

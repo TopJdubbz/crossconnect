@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Search from "../components/Search";
 import SearchResult from "../components/SearchResult";
-// FIXED: Imported your map component and named it EventMap so the tag at the bottom works!
-import EventMap from "../components/map"; 
+import EventMap from "../components/map";
 import "./Dashboard.css";
 import "./Find.css";
 import Eventdetails from "../components/Eventdetails";
+import { fallbackEvents } from "../data/fallbackEvents";
+
+const normalizeEvents = (events) =>
+  events.map((e) => ({ ...e, category: e.category ?? e.interest }));
 
 function Find() {
   const [events, setEvents] = useState([]);
@@ -17,23 +20,38 @@ function Find() {
     const fetchEventsByCategory = async () => {
       try {
         if (query.trim() === "") {
-          const response = await fetch("http://127.0.0.1:5000/getUpcomingEvents");
+          const response = await fetch("/getUpcomingEvents");
           if (response.ok) {
             const data = await response.json();
-            setEvents(data);
+            setEvents(normalizeEvents(Array.isArray(data) ? data : fallbackEvents));
+          } else {
+            setEvents(fallbackEvents);
           }
-          return; 
+          return;
         }
 
-        const url = `http://127.0.0.1:5000/getEvents?event_category=${query}`;
+        const url = `/getEvents?event_category=${encodeURIComponent(query)}`;
         const response = await fetch(url);
-        
+
         if (response.ok) {
           const data = await response.json();
-          setEvents(data);
+          setEvents(normalizeEvents(Array.isArray(data) ? data : fallbackEvents));
+        } else {
+          const filtered = fallbackEvents.filter(
+            (e) => e.category?.toLowerCase().includes(query.toLowerCase())
+          );
+          setEvents(filtered);
         }
       } catch (error) {
         console.error("Failed to fetch events from backend:", error);
+        if (query.trim() === "") {
+          setEvents(fallbackEvents);
+        } else {
+          const filtered = fallbackEvents.filter(
+            (e) => e.category?.toLowerCase().includes(query.toLowerCase())
+          );
+          setEvents(filtered);
+        }
       }
     };
 
@@ -59,7 +77,7 @@ return (
                 onChange={setQuery}
                 placeholder="Search by category..." 
               />
-              <SearchResult events={events} />
+              <SearchResult events={events} onEventClick={setSelectedEvent} />
             </div>
           </div>
 

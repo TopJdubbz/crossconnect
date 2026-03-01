@@ -3,6 +3,7 @@ import "./Dashboard.css";
 import Navbar from "../components/Navbar";
 import ListSection from "../components/ListSection";
 import Dither from "../components/Dither";
+import { fallbackEvents } from "../data/fallbackEvents";
 
 function Dashboard() {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
@@ -23,18 +24,19 @@ function Dashboard() {
     const fetchUpcomingEvents = async () => {
       try {
         // Explicitly pointing to the Flask server on port 5000
-        const response = await fetch("http://127.0.0.1:5000/getUpcomingEvents");
+        const response = await fetch("/getUpcomingEvents");
 
         if (!response.ok) {
           throw new Error("Failed to fetch upcoming events");
         }
 
         const data = await response.json();
+        if (!Array.isArray(data)) throw new Error("Invalid response");
         setUpcomingEvents(data);
         setError(null);
       } catch (err) {
         setError(err.message);
-        setUpcomingEvents([]);
+        setUpcomingEvents(fallbackEvents.slice(0, 10));
       } finally {
         setLoading(false);
       }
@@ -97,7 +99,11 @@ function Dashboard() {
           <h2>Upcoming events</h2>
           <div className="upcoming-events">
             {loading && <p>Loading events...</p>}
-            {error && <p style={{ color: "red" }}>Error: {error}</p>}
+            {error && (
+              <p style={{ color: "#f0ad4e", marginBottom: 8 }}>
+                Backend unavailable — showing cached events.
+              </p>
+            )}
 
             {!loading && upcomingEvents.length === 0 && (
               <p>There are no new upcoming events</p>

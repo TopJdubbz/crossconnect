@@ -1,8 +1,13 @@
+import os
 import sqlite3
 from datetime import datetime, timedelta
 
+# Resolve DB path relative to backend folder (not cwd)
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BACKEND_DIR, 'events.db')
+
 # Connect to database
-connection = sqlite3.connect('events.db')
+connection = sqlite3.connect(DB_PATH)
 cursor = connection.cursor()
 
 # Sample events

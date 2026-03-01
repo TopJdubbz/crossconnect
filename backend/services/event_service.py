@@ -1,14 +1,25 @@
+import os
 import sqlite3
+import threading
 from datetime import datetime, timedelta
 from models import event
-import osmnx as ox
+try:
+    import osmnx as ox
+    HAS_OSMNX = True
+except ImportError:
+    HAS_OSMNX = False
+    ox = None
 import random
 import time
 
 REAL_COORDS = {}
 
-# Create the global connection with the thread safety flag 
-connection = sqlite3.connect('events.db', check_same_thread=False)
+# Resolve DB path relative to backend folder (not cwd)
+BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(BACKEND_DIR, 'events.db')
+
+# Create the global connection with the thread safety flag
+connection = sqlite3.connect(DB_PATH, check_same_thread=False)
 cursor = connection.cursor()
 
 def create_table():
@@ -30,6 +41,9 @@ def build_coordinate_cache():
     cursor.execute('SELECT DISTINCT location FROM events')
     unique_locations = cursor.fetchall()
     
+    if not HAS_OSMNX:
+        print("OSMnx not available, skipping geocoding.")
+        return
     for row in unique_locations:
         address = row[0]
         try:
@@ -95,16 +109,18 @@ def init_db():
             print(f"✓ Database initialized with {len(sample_events)} sample events")
     except Exception as e:
         print(f"Error initializing database: {e}")
-    build_coordinate_cache()
+    # Run geocoding in background so server starts immediately
+    threading.Thread(target=build_coordinate_cache, daemon=True).start()
 
 def addEvent(name, location, category, event_time):
     formatted_time = str(event_time).replace('T', ' ')
     
-    try:
-        new_coords = ox.geocode(location)
-        REAL_COORDS[location] = new_coords
-    except Exception:
-        pass
+    if HAS_OSMNX:
+        try:
+            new_coords = ox.geocode(location)
+            REAL_COORDS[location] = new_coords
+        except Exception:
+            pass
 
     cursor.execute(
         'INSERT INTO events (name, location, category, time) VALUES (?, ?, ?, ?)', 
