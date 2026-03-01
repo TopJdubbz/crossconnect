@@ -1,0 +1,69 @@
+.eventdetails-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.eventdetails-popup {
+  background: white;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.eventdetails-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #64748b;
+  line-height: 1;
+  padding: 4px;
+}
+
+.eventdetails-close:hover {
+  color: #0f172a;
+}
+
+.eventdetails-content {
+  padding: 24px;
+}
+
+.eventdetails-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  margin-top: 18px;
+}
+
+.eventdetails-content h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.25rem;
+}
+
+.eventdetails-content p {
+  margin: 8px 0;
+  color: #475569;
+}
+
+.eventdetails-description {
+  margin-top: 16px !important;
+  line-height: 1.5;
+}

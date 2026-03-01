@@ -4,7 +4,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
-export default function SearchResult({ events = [] }) {
+export default function SearchResult({ events = [], onEventClick }) {
   if (events.length === 0) {
     return (
       <Typography color="text.secondary" sx={{ mt: 2 }}>
@@ -16,7 +16,15 @@ export default function SearchResult({ events = [] }) {
   return (
     <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 1.5 }}>
       {events.map((event) => (
-        <Card key={event.id} variant="outlined" sx={{ width: "100%" }}>
+        <Card
+          key={event.id}
+          variant="outlined"
+          sx={{
+            width: "100%",
+            cursor: onEventClick ? "pointer" : "default",
+          }}
+          onClick={() => onEventClick?.(event)}
+        >
           <CardContent sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}>
             <Typography variant="subtitle1" component="h2" fontWeight={600}>
               {event.name}
@@ -29,6 +37,11 @@ export default function SearchResult({ events = [] }) {
             {event.category && (
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.25 }}>
                 {event.category}
+              </Typography>
+            )}
+            {(event.date || event.time) && (
+              <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.25 }}>
+                {[event.date, event.time].filter(Boolean).join(" · ")}
               </Typography>
             )}
           </CardContent>
