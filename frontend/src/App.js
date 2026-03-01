@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Create from './pages/Create';
 import Find from './pages/Find';
 import Test from './pages/Test';
+import User from './pages/User';
 
 function App() {
   //Fetch data from app.py connecting frontend to backend
@@ -24,6 +25,7 @@ function App() {
       <Route path="/create" element={<Create/>}/>
       <Route path="/find" element={<Find/>}/>
       <Route path="/test" element={<Test/>}/>
+      <Route path="/user" element={<User/>}/>
     </Routes>
   );
 }
