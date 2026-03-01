@@ -1,82 +1,38 @@
-from Flask import Flask, jsonify, request, render_template
-app = Flask(__name__, template_folder=str(_frontend))
+import services.event_service as es
+from flask import Flask, jsonify, request
+from flask_cors import CORS 
 
+app = Flask(__name__)
+CORS(app) 
 
-_frontend = Path(__file__).resolve().parent.parent.parent
-
-class Location:
-    #Edit this as we figure out google maps
-    def __init__(self, zipCode, number, street, city, state):
-        self.zipCode = zipCode
-        self.number = number
-        self.street = street
-        self.city = city
-        self.state = state
-        #self.longitude = longitude
-        #self.latitude = latitude
-
-    @classmethod
-    def createLocation(cls, zipCode, number, street, city, state):
-        return cls(zipCode, number, street, city, state)
-
-class EventDate:
-    def __init__(self, day, month, year):
-        self.day = day
-        self.month = month
-        self.year = year
-
-    @classmethod
-    def createEventDate(cls, day, month, year):
-        return cls(day, month, year)
-
-class EventTime:
-    def __init__(self, hour, minute):
-        self.hour = hour
-        self.minute = minute
-
-    @classmethod
-    def createEventTime(cls, hour, minute):
-        return cls(hour, minute)
-
-class Event:
-    def __init__(self, interest, name, date, location, time):
-        self.interest = interest
-        self.name = name
-        #Edit location as we change location
-        self.location = location
-        self.date = date
-        #self.capacity = capacity
-        self.time = time
-    
-    @classmethod
-    def createEvent(cls, interest, name, date, location, time):
-        return cls(interest, name, date, location, time)
-
-                   
-def addEvent(interest, name, location, date, time):
-    myLoc = Location.createLocation(zipCode, number, street, city, state)
-    myDate = EventDate.creatEventDate(day, month, year)
-    myTime = EventTime.createEventTime(hour, minute)
-    newEvent = Event.createEvent(interest, name, myDate, myLoc, myTime)
-
-def getEvents(eventName):
-    #get event from database
-    
-    return Event
-
+# Initialize database with sample events on startup
+# (Assuming you built this function inside event_service.py)
+#es.init_db()
 
 @app.route('/addEvent', methods=['POST'])
-def add_user():
-    user_input = request.json.get('event_data')
-    addEvent(user_input.interest, user_input.name, user_input.location, user_input.date, user_input.time)
-    return jsonify('Event added successfully')
+def add_event():
+    data = request.get_json()
+    
+    name = data.get('name')
+    location = data.get('location')
+    date = data.get('date')
+    time = data.get('time')
+    
+    es.addEvent(name, location, date, time)
+    
+    return jsonify({"message": "Event added successfully"}), 201
 
 @app.route('/getEvents', methods=['GET'])
-def get_users():
-    user_input = request.json.get('event_category')
-    events = getEvents()
-    return jsonify(events)    
-# Make a class of events
-# Make a class of dashboard
-# Make a class of interest its a type
+def get_events():
+    category = request.args.get('event_category') 
+    
+    events = es.getEvents(category)
+    return jsonify(events), 200    
 
+@app.route('/getUpcomingEvents', methods=['GET'])
+def get_upcoming_events():
+    events = es.getTopTenEventsByDate()
+    return jsonify(events), 200
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)

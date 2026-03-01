@@ -9,14 +9,14 @@ import Create from "./pages/Create";
 function App() {
   // Fetch data from backend
   const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetch("http://localhost:5000/api/data")
-      .then((res) => res.json())
-      .then((data) => setData(data.message))
-      .catch((err) => console.log(err));
-  }, []);
-
+ 
+  // useEffect(() => {
+  //   fetch("http://localhost:5000/api/data")
+  //     .then((res) => res.json())
+  //     .then((data) => setData(data.message))
+  //     .catch((err) => console.log(err));
+  // }, []);
+ 
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
