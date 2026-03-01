@@ -59,7 +59,7 @@
 .find-container {
   width: 400px;
   height: calc(100vh - 70px);
-  background-color: #6f726f;
+  background-color: grey;
   color: white;
   padding: 20px;
   position: fixed;
