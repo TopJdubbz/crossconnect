@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import CalendarComponent from "../components/Calendar";
+import ButtonComponent from "../components/Button";
+import SearchComponent from "../components/Search";
 
 // Sample events to test calendar functionality
 const sampleEvents = [
@@ -34,9 +36,18 @@ const sampleEvents = [
 function Test() {
   return (
     <div style={{ padding: "24px" }}>
+      <Link to="/">← Back to home</Link>
+      <h1>Button test</h1>
+      <ButtonComponent
+        text="Test Button"
+        onClick={() => alert("Button clicked!")}
+      />
       <h1>Calendar test</h1>
       <p>Use the calendar below to try month, week, and agenda views.</p>
       <CalendarComponent events={sampleEvents} />
+      <h1>Search test</h1>
+      <SearchComponent />
+      <br></br>
       <Link to="/">← Back to home</Link>
     </div>
   );

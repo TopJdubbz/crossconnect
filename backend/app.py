@@ -1,55 +1,68 @@
-from Flask import Flask, jsonify, request
-from flask_cors import CORS
+from Flask import Flask, jsonify, request, render_template
+app = Flask(__name__, template_folder=str(_frontend))
 
-app = Flask(__name__)
-CORS
-@app.route('/api/data', methods=['GET'])
-def get_data():
-    data = {
-        'message': 'Hello from the backend!',
-        'items': [1, 2, 3, 4, 5]
-    }
-    return jsonify(data)
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+_frontend = Path(__file__).resolve().parent.parent.parent
+
 
 class Interest:
     def __init__(self, type):
         self.type = type
 
-class address:
-    def __init__(self, number, street, city, state):
+class Location:
+    #Edit this as we figure out google maps
+    def __init__(self, zipCode, number, street, city, state):
+        self.zipCode = zipCode
         self.number = number
         self.street = street
         self.city = city
         self.state = state
+        #self.longitude = longitude
+        #self.latitude = latitude
 
-class location:
-    #Edit this as we figure out google maps
-    def __init__(self, zipCode, address):
-        self.zipCode = zipCode
-        self.address = address(number,street, city, state)
-        self.longitude = longitude
-        self.latitude = latitude
-
-class date:
+class EventDate:
     def __init__(self, day, month, year):
         self.day = day
         self.month = month
         self.year = year
 
+class EventTime:
+    def __init__(self, hour, minute):
+        self.hour = hour
+        self.minute = minute
 
 class Event:
-    def __init__(self, name, date, location):
-        self.interest = name
+    def __init__(self, name, date, location, time):
+        self.name = name
         #Edit location as we change location
         self.location = location
-        self.date = date(day, month, year)
+        self.date = date
         #self.capacity = capacity
         self.time = time
 
+def addEvent(name, location, date, time):
+    #attributes of address
+    myLoc = location(number, street, city, state)
+    myDate = date(day, month, year)
+    myTime = time(hour, minute)
+    newEvent = Event(name, myDate, myLoc, myTime)
 
+def getEvents(eventName):
+    #get event from database
+    return eventName 
+
+
+@app.route('/addEvent', methods=['POST'])
+def add_user():
+    user_input = request.json.get('event_data')
+    addEvent(user_input.name, user_input.location, user_input.date, user_input.time)
+    return jsonify('Event added successfully')
+
+@app.route('/getEvents', methods=['GET'])
+def get_users():
+    user_input = request.json.get('event_category')
+    events = getEvents()
+    return jsonify(events)    
 # Make a class of events
 # Make a class of dashboard
 # Make a class of interest its a type
