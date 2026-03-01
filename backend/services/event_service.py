@@ -2,6 +2,10 @@ import sqlite3
 from datetime import datetime, timedelta
 from models import event
 import osmnx as ox
+import random
+import time
+
+REAL_COORDS = {}
 
 # Create the global connection with the thread safety flag 
 connection = sqlite3.connect('events.db', check_same_thread=False)
@@ -21,6 +25,24 @@ def create_table():
 
 create_table()
 
+def build_coordinate_cache():
+    
+    cursor.execute('SELECT DISTINCT location FROM events')
+    unique_locations = cursor.fetchall()
+    
+    for row in unique_locations:
+        address = row[0]
+        try:
+            coords = ox.geocode(address)
+            REAL_COORDS[address] = coords
+            print(f"✓ Mapped: {address}")
+        except Exception as e:
+            print(f"✗ Failed to map: {address}")
+            
+        
+        
+    print("Coordinate cache built successfully! Server ready.")
+
 def init_db():
     """Initialize database with sample events if empty"""
     try:
@@ -29,61 +51,111 @@ def init_db():
         
         if count == 0:
             sample_events = [
-                ("Tech Meetup", "Downtown Coffee Shop", "Technology", datetime.now() + timedelta(days=2)),
-                ("Community Cleanup", "Central Park", "Community", datetime.now() + timedelta(days=5)),
-                ("Yoga Class", "Wellness Center", "Health", datetime.now() + timedelta(days=1)),
-                ("Book Club", "Library", "Entertainment", datetime.now() + timedelta(days=7)),
-                ("Networking Event", "Business District", "Business", datetime.now() + timedelta(days=3)),
-                ("Art Exhibition", "Gallery Downtown", "Art", datetime.now() + timedelta(days=10)),
-                ("Sports Tournament", "City Stadium", "Sports", datetime.now() + timedelta(days=14)),
-                ("Music Festival", "Central Venue", "Entertainment", datetime.now() + timedelta(days=21)),
-                ("Coding Workshop", "Tech Hub", "Technology", datetime.now() + timedelta(days=4)),
-                ("Charity Run", "Riverside Park", "Community", datetime.now() + timedelta(days=6)),
+                # Technology
+                ("AI & Machine Learning Summit", "1 Washington Sq, San Jose, CA 95192", "Technology", datetime.now() + timedelta(days=2)),
+                ("Silicon Valley Startup Mixer", "10600 N Tantau Ave, Cupertino, CA 95014", "Technology", datetime.now() + timedelta(days=6)),
+                ("Cybersecurity Bootcamp", "21250 Stevens Creek Blvd, Cupertino, CA 95014", "Technology", datetime.now() + timedelta(days=12)),
+                
+                # Sports
+                ("Sharks vs. Kings Hockey Game", "525 W Santa Clara St, San Jose, CA 95113", "Sports", datetime.now() + timedelta(days=3)),
+                ("49ers Preseason Tailgate", "4900 Marie P DeBartolo Way, Santa Clara, CA 95054", "Sports", datetime.now() + timedelta(days=9)),
+                ("Amateur Chess Tournament", "500 El Camino Real, Santa Clara, CA 95053", "Sports", datetime.now() + timedelta(days=5)),
+                
+                # Culture
+                ("Armenian Heritage Festival", "10800 Torre Ave, Cupertino, CA 95014", "Culture", datetime.now() + timedelta(days=1)),
+                ("Downtown Art Walk", "377 Santana Row, San Jose, CA 95128", "Culture", datetime.now() + timedelta(days=4)),
+                ("International Food Festival", "5001 Great America Pkwy, Santa Clara, CA 95054", "Culture", datetime.now() + timedelta(days=15)),
+                
+                # Political
+                ("City Council Townhall", "200 E Santa Clara St, San Jose, CA 95113", "Political", datetime.now() + timedelta(days=7)),
+                ("Mayoral Debate 2026", "500 Castro St, Mountain View, CA 94041", "Political", datetime.now() + timedelta(days=14)),
+                
+                # Education
+                ("Robotics for Beginners Workshop", "1401 N Shoreline Blvd, Mountain View, CA 94043", "Education", datetime.now() + timedelta(days=10)),
+                ("Local History Lecture", "500 El Camino Real, Santa Clara, CA 95053", "Education", datetime.now() + timedelta(days=8)),
+                ("Open Source Software Meetup", "1600 Amphitheatre Pkwy, Mountain View, CA 94043", "Education", datetime.now() + timedelta(days=11)),
+                
+                # Health
+                ("Community Wellness Fair", "701 S Bascom Ave, San Jose, CA 95128", "Health", datetime.now() + timedelta(days=8)),
+                ("Morning Yoga in the Park", "10185 N Stelling Rd, Cupertino, CA 95014", "Health", datetime.now() + timedelta(days=1)),
+                ("5K Charity Run", "1000 W Hedding St, San Jose, CA 95126", "Health", datetime.now() + timedelta(days=20)),
+                
+                # Entertainment
+                ("Outdoor Summer Concert", "One Amphitheatre Pkwy, Mountain View, CA 94043", "Entertainment", datetime.now() + timedelta(days=4)),
+                ("Stand-up Comedy Night", "150 S 1st St, San Jose, CA 95113", "Entertainment", datetime.now() + timedelta(days=2)),
+                ("Broadway in San Jose: Aladdin", "255 Almaden Blvd, San Jose, CA 95113", "Entertainment", datetime.now() + timedelta(days=18)),
             ]
             
             for event in sample_events:
                 cursor.execute('INSERT INTO events (name, location, category, time) VALUES (?, ?, ?, ?)', event)
             
             connection.commit()
+
+            
             print(f"✓ Database initialized with {len(sample_events)} sample events")
     except Exception as e:
         print(f"Error initializing database: {e}")
+    build_coordinate_cache()
 
-def addEvent(name, location, category, time):
-    cursor.execute('INSERT INTO events (name, location, category, time) VALUES (?, ?, ?, ?)', (name, location, category, time))
-    connection.commit() 
+def addEvent(name, location, category, event_time):
+    formatted_time = str(event_time).replace('T', ' ')
+    
+    try:
+        new_coords = ox.geocode(location)
+        REAL_COORDS[location] = new_coords
+    except Exception:
+        pass
+
+    cursor.execute(
+        'INSERT INTO events (name, location, category, time) VALUES (?, ?, ?, ?)', 
+        (name, location, category, formatted_time)
+    )
+    connection.commit()
+    
+    return True
 
 # Fetch events by category, in find section
 def getEvents(category):
     events = []
-    for row in cursor.execute('SELECT * FROM events WHERE category LIKE ?', (category,)):
-        #make get coords only take the addy
+    search_term = f"{category}%" 
+    
+    for row in cursor.execute('SELECT * FROM events WHERE category LIKE ?', (search_term,)):
         coords = getCoord(row[2])
-        row[5] = coords[1] if coords else None
-        row[6] = coords[0]
-        #This gets sent to find.jsx. 
+        
+        calculated_lat = coords[0] if coords else None
+        calculated_lng = coords[1] if coords else None
+        
         events.append({
             "id": row[0],
             "name": row[1],
             "location": row[2],
             "interest": row[3],
             "timedate": row[4],
-            "lat": row[5],
-            "lng": row[6]
+            "lat": calculated_lat,
+            "lng": calculated_lng
         })
-    return events 
+        
+    return events
 
 
 
 def getTopTenEventsByDate():
     events = []
     for row in cursor.execute('SELECT * FROM events ORDER BY time LIMIT 10'):
+
+        coords = getCoord(row[2])
+        
+        calculated_lat = coords[0] if coords else None
+        calculated_lng = coords[1] if coords else None
+        
         events.append({
             "id": row[0], 
             "name": row[1],
             "location": row[2],
             "category": row[3],
-            "time": row[4]
+            "time": row[4],
+            "lat": calculated_lat, 
+            "lng": calculated_lng  
         })
     return events
 
@@ -101,6 +173,6 @@ def makeEventObjList(events):
    # return location
 
 def getCoord(myAddr):
-    coord = ox.geocode(myAddr)
-    return coord
+    if myAddr in REAL_COORDS:
+        return REAL_COORDS[myAddr] # Returns (lat, lng) perfectly
 

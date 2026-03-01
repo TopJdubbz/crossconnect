@@ -1,0 +1,41 @@
+.split-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 30px;
+  width: 100%;
+  align-items: start;
+}
+
+.left-panel {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.clean-find-container h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.right-panel {
+  position: sticky;
+  top: 20px;
+}
+
+.map-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  border: 2px solid #eaeaea;
+}
+
+@media (max-width: 900px) {
+  .split-layout {
+    grid-template-columns: 1fr; 
+  }
+  .right-panel {
+    position: relative;
+    top: 0;
+  }
+}

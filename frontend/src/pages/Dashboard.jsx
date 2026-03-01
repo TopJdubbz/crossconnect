@@ -9,6 +9,16 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const formatTime = (timeString) => {
+    const date = new Date(timeString);
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+  };
+
   useEffect(() => {
     const fetchUpcomingEvents = async () => {
       try {
@@ -37,11 +47,12 @@ function Dashboard() {
     <div className="dashboard">
       <div className="main-content">
         <Navbar />
-        <div className="section-title">
+
+        {/* <div className="section-title">
           <h2>Your events</h2>
           <div className="your-events" />
           <ListSection />
-        </div>
+        </div> */}
         
         <div className="section-title">
           <h2>Upcoming events</h2>
@@ -57,7 +68,7 @@ function Dashboard() {
               <ul>
                 {upcomingEvents.map((event) => (
                   <li key={event.id}>
-                    <strong>{event.name}</strong> - {event.time}
+                    <strong>{event.name}</strong> - {formatTime(event.time)}
                     <br />
                     Location: {event.location} | Category: {event.category}
                   </li>
@@ -67,7 +78,7 @@ function Dashboard() {
           </div>
         </div>
         
-        <Link to="/test">Calendar test page</Link>
+        {/* <Link to="/test">Calendar test page</Link> */}
       </div>
     </div>
   );
