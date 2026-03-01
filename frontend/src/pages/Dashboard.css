@@ -54,3 +54,10 @@ flex-direction: column;
     display: block;
     width: 100%;
 }
+.find-container{
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    margin-top: 20px;
+    color: grey;
+}

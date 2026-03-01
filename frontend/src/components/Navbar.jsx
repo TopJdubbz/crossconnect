@@ -6,6 +6,7 @@ const Navbar = () => {
       <div style={styles.logo}>CrossConnect</div>
         <Link to="/">Home</Link>
         <Link to="/create">Create</Link>
+        <Link to="/find">Find</Link>
       <input type="search" placeholder="Search..." style={styles.searchInput}  />
     </nav>
   );

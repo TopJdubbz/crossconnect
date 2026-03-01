@@ -5,6 +5,8 @@ import ListSection from './components/ListSection';
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Create from './pages/Create';
+import Find from './pages/Find';
+import Test from './pages/Test';
 
 function App() {
   //Fetch data from app.py connecting frontend to backend
@@ -20,6 +22,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Dashboard/>}/>
       <Route path="/create" element={<Create/>}/>
+      <Route path="/find" element={<Find/>}/>
+      <Route path="/test" element={<Test/>}/>
     </Routes>
   );
 }
