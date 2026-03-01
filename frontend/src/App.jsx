@@ -4,6 +4,7 @@ import "./App.css";
 
 import Test from "./pages/Test";
 import Dashboard from "./pages/Dashboard";
+import Create from "./pages/Create";
 
 function App() {
   // Fetch data from backend
@@ -20,6 +21,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Dashboard />} />
       <Route path="/test" element={<Test />} />
+      <Route path="/create" element={<Create />} />
     </Routes>
   );
 }
