@@ -1,10 +1,27 @@
+import services.event_service as es
 from Flask import Flask, jsonify, request, render_template
 app = Flask(__name__, template_folder=str(_frontend))
 
 
 _frontend = Path(__file__).resolve().parent.parent.parent
 
+@app.route('/addEvent', methods=['POST'])
+def add_user():
+    user_input = request.json.get('event_data')
+    es.addEvent(user_input.name, user_input.location, user_input.date, user_input.time)
+    return jsonify('Event added successfully')
 
+@app.route('/getEvents', methods=['GET'])
+def get_users():
+    user_input = request.json.get('event_category')
+    events = es.getEvents()
+    return jsonify(events)    
+# Make a class of events
+# Make a class of dashboard
+# Make a class of interest its a type
+
+
+'''
 class Interest:
     def __init__(self, type):
         self.type = type
@@ -51,19 +68,6 @@ def getEvents(eventName):
     #get event from database
     return eventName 
 
+'''
 
-@app.route('/addEvent', methods=['POST'])
-def add_user():
-    user_input = request.json.get('event_data')
-    addEvent(user_input.name, user_input.location, user_input.date, user_input.time)
-    return jsonify('Event added successfully')
-
-@app.route('/getEvents', methods=['GET'])
-def get_users():
-    user_input = request.json.get('event_category')
-    events = getEvents()
-    return jsonify(events)    
-# Make a class of events
-# Make a class of dashboard
-# Make a class of interest its a type
 
