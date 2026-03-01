@@ -1,0 +1,12 @@
+{
+    "name": "crossconnect",
+    "private": true,
+    "scripts": {
+      "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+      "backend": "cd backend && python app.py",
+      "frontend": "cd frontend && npm start"
+    },
+    "devDependencies": {
+      "concurrently": "^9.0.0"
+    }
+}
