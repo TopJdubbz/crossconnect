@@ -1,29 +1,76 @@
 import sqlite3
-import models.event as Event
+from datetime import datetime, timedelta
+
+# Create the global connection with the thread safety flag 
+connection = sqlite3.connect('events.db', check_same_thread=False)
+cursor = connection.cursor()
+
 def create_table():
-    cursor.execute('CREATE TABLE IF NOT EXISTS events (interest TEXT, name TEXT, address TEXT, lat TEXT, lng TEXT, timedate DATETIME)')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            name TEXT, 
+            location TEXT, 
+            category TEXT, 
+            time DATETIME
+        )
+    ''')
+    connection.commit()
 
+create_table()
 
-with sqlite3.connect('events.db') as connection:
-    cursor = connection.cursor()
+def init_db():
+    """Initialize database with sample events if empty"""
+    try:
+        cursor.execute('SELECT COUNT(*) FROM events')
+        count = cursor.fetchone()[0]
+        
+        if count == 0:
+            sample_events = [
+                ("Tech Meetup", "Downtown Coffee Shop", "Technology", datetime.now() + timedelta(days=2)),
+                ("Community Cleanup", "Central Park", "Community", datetime.now() + timedelta(days=5)),
+                ("Yoga Class", "Wellness Center", "Health", datetime.now() + timedelta(days=1)),
+                ("Book Club", "Library", "Entertainment", datetime.now() + timedelta(days=7)),
+                ("Networking Event", "Business District", "Business", datetime.now() + timedelta(days=3)),
+                ("Art Exhibition", "Gallery Downtown", "Art", datetime.now() + timedelta(days=10)),
+                ("Sports Tournament", "City Stadium", "Sports", datetime.now() + timedelta(days=14)),
+                ("Music Festival", "Central Venue", "Entertainment", datetime.now() + timedelta(days=21)),
+                ("Coding Workshop", "Tech Hub", "Technology", datetime.now() + timedelta(days=4)),
+                ("Charity Run", "Riverside Park", "Community", datetime.now() + timedelta(days=6)),
+            ]
+            
+            for event in sample_events:
+                cursor.execute('INSERT INTO events (name, location, category, time) VALUES (?, ?, ?, ?)', event)
+            
+            connection.commit()
+            print(f"✓ Database initialized with {len(sample_events)} sample events")
+    except Exception as e:
+        print(f"Error initializing database: {e}")
 
-    create_table()
+def addEvent(name, location, category, time):
+    cursor.execute('INSERT INTO events (name, location, category, time) VALUES (?, ?, ?, ?)', (name, location, category, time))
+    connection.commit() 
 
-#address, lat, lng are stored separately in table but together under "location" in Event.
-def addEvent(interest, name, address, lat, lng, timedate):
-    location = Event.Location.createLocation(address, lat, lng)
-    newEvent = Event.createEvent(interest, name, location, timedate)
-    cursor.execute('INSERT INTO events VALUES (?, ?, ?, ?, ?, ?)', (newEvent.interest, newEvent.name, newEvent.location.address, newEvent.location.lat, newEvent.location.lng, newEvent.timedate))
-
-
-def getEvents(interest):
+def getEvents(category):
     events = []
-    for row in cursor.execute('SELECT * FROM events WHERE interest = ?', (interest,)):
-        events.append(Event(row[0], row[1], row[2], row[3]))
+    for row in cursor.execute('SELECT * FROM events WHERE category = ?', (category,)):
+        events.append({
+            "id": row[0],
+            "name": row[1],
+            "location": row[2],
+            "category": row[3],
+            "time": row[4]
+        })
     return events 
 
 def getTopTenEventsByDate():
     events = []
-    for row in cursor.execute('SELECT * FROM events ORDER BY time DESC LIMIT 10'):
-        events.append(Event(row[0], row[1], row[2], row[3]))
+    for row in cursor.execute('SELECT * FROM events ORDER BY time LIMIT 10'):
+        events.append({
+            "id": row[0], 
+            "name": row[1],
+            "location": row[2],
+            "category": row[3],
+            "time": row[4]
+        })
     return events

@@ -1,16 +1,12 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';   
 const Navbar = () => {
   return (
     <nav style={styles.navbar}>
       <div style={styles.logo}>CrossConnect</div>
-      <ul style={styles.navLinks}>
-        <li><a href="#" style={styles.link}>Home</a></li>
-        <li><a href="#" style={styles.link}>Events</a></li>
-        <li><a href="#" style={styles.link}>About</a></li>
-        <li><a href="#" style={styles.link}>Contact</a></li>
-      </ul>
-      <input type="search" placeholder="Search..." style={styles.searchInput} />
+        <Link to="/">Home</Link>
+        <Link to="/create">Create</Link>
+        <Link to="/find">Find</Link>
     </nav>
   );
 };

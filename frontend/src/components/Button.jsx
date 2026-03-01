@@ -1,7 +1,7 @@
 import "./Button.css";
 
 export default function Button({
-  children = "Button",
+  children = "Submit",
   variant = "dark",
   onClick,
   disabled = false,
