@@ -54,7 +54,6 @@ class Event:
 
                    
 def addEvent(interest, name, location, date, time):
-    #attributes of address
     myLoc = Location.createLocation(zipCode, number, street, city, state)
     myDate = EventDate.creatEventDate(day, month, year)
     myTime = EventTime.createEventTime(hour, minute)
@@ -62,13 +61,14 @@ def addEvent(interest, name, location, date, time):
 
 def getEvents(eventName):
     #get event from database
-    return eventName 
+    
+    return Event
 
 
 @app.route('/addEvent', methods=['POST'])
 def add_user():
     user_input = request.json.get('event_data')
-    addEvent(user_input.name, user_input.location, user_input.date, user_input.time)
+    addEvent(user_input.interest, user_input.name, user_input.location, user_input.date, user_input.time)
     return jsonify('Event added successfully')
 
 @app.route('/getEvents', methods=['GET'])
