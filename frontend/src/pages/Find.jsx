@@ -7,7 +7,6 @@ import EventMap from "../components/map";
 import "./Dashboard.css";
 import "./Find.css";
 
-// FIXED: Changed 'receiveEvents' to 'Find' (Capital letter required by React!)
 function Find() {
   const [events, setEvents] = useState([]);
   const [query, setQuery] = useState("");
@@ -70,6 +69,12 @@ return (
 
         </div>
       </div>
+      {selectedEvent && (
+        <Eventdetails
+          event={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+        />
+      )}
     </div>
   );
 }
